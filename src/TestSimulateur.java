@@ -49,6 +49,48 @@ public class TestSimulateur extends Simulateur
 		assertFalse(portes[0].check_porteOuverte());
 		System.out.println("(c) La "+portes[0]+" s'est bien refermee.");
 	}
+
+	/** Test unitaire sur Usager */
+	@Test
+	public void testUsagerAttentif()
+	{
+		System.out.println("\n -> Test UsagerAttentif : vérification d'arrivé à destination d'un usager");
+		Usager user = new Usager("Usager1",3,1,this);
+		//Valider l'état de départ
+		assertEquals("Usager : name=Usager1 - etage=3 - destination=1 - distraction=0",user.toString());
+
+
+		portes[2] = new Porte(3,Constantes.DELAIPORTE,this);
+		portes[0] = new Porte(1,Constantes.DELAIPORTE,this);
+
+		this.ascenseur = new Ascenseur(0,this);
+
+		//Run user
+		user.start();
+
+		this.ascenseur.etage=3; //Placé l'ascenseur à l'étage 3
+		this.portes[2].porteOuverte=true;
+
+		// Attendre l'entrée de l'usager (4s delai)...
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+
+		// Attendre que l'usager selection l'étage.
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+
+		this.portes[2].porteOuverte = false;
+		this.ascenseur.etage=1;
+		this.portes[0].porteOuverte = true;
+
+		// Attendre que l'usager sorte.
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+        assertEquals("Usager : name=Usager1 - etage=1 - destination=1 - distraction=0",user.toString());
+	}
 	
 
 	

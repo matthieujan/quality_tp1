@@ -180,6 +180,10 @@ public class Ascenseur extends Thread
 
     	return ret;
     }
+
+    public String toString(){
+        return "Ascenseur : etage="+this.etage+" - direction="+this.dir;
+	}
     
     
 }
