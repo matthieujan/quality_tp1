@@ -91,4 +91,9 @@ public class Usager extends Thread
 		// L'usager a termine 
 		sim.sig_usagerTermine();
     }
+
+    public String toString(){
+    	return "Usager : name="+this.name+" - etage="+this.etage+" - destination="+this.dest
+				+" - distraction="+this.delai;
+	}
 }
