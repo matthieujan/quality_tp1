@@ -1,5 +1,8 @@
 
 import org.junit.*;
+
+import javax.sound.sampled.Port;
+
 import static org.junit.Assert.*;
 
 
@@ -90,7 +93,45 @@ public class TestSimulateur extends Simulateur
 		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
 		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
 	}
-	
+
+	@Test
+	public void testAscenseur(){
+		System.out.println("\n -> Test Ascenseur: vérification du fonctionnement de l'ascenseur");
+		this.ascenseur = new Ascenseur(1, this);
+
+		this.portes[1] = new Porte(2, Constantes.DELAIPORTE, this);
+
+		//Valider l'état de départ
+		assertEquals("Ascenseur : etage=1 - direction=NONE", ascenseur.toString());
+
+		this.ascenseur.start();
+
+
+		//Valider l'ascenseur monte
+		this.appels[1]= Direction.UP;
+
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+		assertTrue(this.check_arretCetEtage(2));
+
+		this.portes[1].porteOuverte = false;
+
+		etageArret=-1;
+
+
+		//Valider l'ascenseur descend
+		this.appels[0] = Direction.UP;
+
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+		assertTrue(this.check_arretCetEtage(1));
+
+
+
+
+	}
 
 	
 }
