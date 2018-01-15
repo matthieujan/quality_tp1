@@ -26,6 +26,7 @@ public class Usager extends Thread
 		this.name =name;
 		this.etage =etage;
 		this.dest =dest;
+		this.dir = Direction.NONE;
 		this.dir = dest > etage ? Direction.UP : Direction.DOWN;
 		this.delai =0;
 		this.sim =sim;
@@ -36,11 +37,32 @@ public class Usager extends Thread
 		this.name =name;
 		this.etage =etage;
 		this.dest =dest;
+		this.dir = Direction.NONE;
 		this.dir = dest > etage ? Direction.UP : Direction.DOWN;
 		this.delai =distraction;
 		this.sim =sim;
     }
-    
+    /** Constructeur supplementaire qui specifie une direction et un temps de distraction pour l'usager. */
+    public Usager(String name, int etage, int dest, Direction direction, long distraction, Simulateur sim)
+    {
+		this.name =name;
+		this.etage =etage;
+		this.dest =dest;
+		this.dir = direction;
+		this.delai =distraction;
+		this.sim =sim;
+    }
+
+    @Override
+    public String toString()
+    {
+    	return "Usager[" +
+    			"nom="	+ name +
+    			", etage=" + etage +
+    			", dest=" + dest +
+    			", dir=" + dir + 
+    			"]";
+    }
 
     public void run()
     {
@@ -91,9 +113,4 @@ public class Usager extends Thread
 		// L'usager a termine 
 		sim.sig_usagerTermine();
     }
-
-    public String toString(){
-    	return "Usager : name="+this.name+" - etage="+this.etage+" - destination="+this.dest
-				+" - distraction="+this.delai;
-	}
 }

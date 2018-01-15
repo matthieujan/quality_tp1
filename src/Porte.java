@@ -13,7 +13,7 @@ public class Porte extends Thread
     /** L'instance du simulateur qui gere le syteme. */	
     private Simulateur sim;
     
-    static private boolean DEBUG =Constantes.DEBUG;
+    static private boolean DEBUG =true && Constantes.DEBUG;
     
     /** Constructeur */
     public Porte(int etage, Simulateur sim)

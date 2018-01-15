@@ -79,8 +79,8 @@ public class Simulateur
 		}
 	
 		// Creer les usagers (partie du preambule) 
-		(new Usager("0",2,3,this)).start(); // (nom, etage, dest, simulateur)
-		(new Usager("1",3,1,this)).start();
+		(new Usager("0",2,3,Constantes.DELAIDISTRACTION, this)).start(); // (nom, etage, dest, simulateur)
+		(new Usager("1",3,1,Constantes.DELAIDISTRACTION, this)).start();
 		
 		// Creer l'ascenseur  (partie du preambule) 
 		ascenseur = new Ascenseur(1, this); // (etage, simulateur)
