@@ -12,15 +12,16 @@ import static org.junit.Assert.*;
 public class TestSimulateur extends Simulateur 
 {
 
-	public static junit.framework.Test suite() 
+	public static junit.framework.Test suite()
 	{
 		return new junit.framework.JUnit4TestAdapter(TestSimulateur.class);
 	}
 
     
 	/** Test unitaire sur la porte. */
-	@Test 
-	public void testPorte1() 
+	@Test
+	@Ignore
+	public void testPorte1()
 	{
 		System.out.println("\n-> Test 1: ouverture/fermeture d'une porte au 1er l'etage\n");
 
@@ -55,6 +56,7 @@ public class TestSimulateur extends Simulateur
 
 	/** Test unitaire sur Usager */
 	@Test
+	@Ignore
 	public void testUsagerAttentif()
 	{
 		System.out.println("\n -> Test UsagerAttentif : vérification d'arrivé à destination d'un usager");
@@ -95,6 +97,7 @@ public class TestSimulateur extends Simulateur
 	}
 
 	@Test
+	@Ignore
 	public void testAscenseur(){
 		System.out.println("\n -> Test Ascenseur: vérification du fonctionnement de l'ascenseur");
 		this.ascenseur = new Ascenseur(1, this);
