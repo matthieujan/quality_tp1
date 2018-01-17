@@ -23,9 +23,31 @@ Direction.UP
 ##### Condition de réussite
 assertEquals(Direction.UP,ascenseur.choisirDirection())
 ##### Test exécuté avec succès ou non
+Oui
 ##### Code
-##### Trace d'execution du test
+@Test
+	public void testChoisirDirection_poursuiteMontee()
+	{
+		System.out.println("\n Test 1 : choisir Direction - poursuiteMontée\n");
 
+		this.ascenseur = new Ascenseur(1, this);
+		appels[2] = Direction.DOWN;
+
+		System.out.println("(a) L'"+this.ascenseur+" est au premier étage");
+
+		//Valider le comportement :
+		assertEquals(Direction.UP, this.ascenseur.choisirDirection());
+
+		System.out.println("(b) La direction choisie est bien UP");
+	}
+##### Trace d'execution du test
+```
+Test 1 : choisir Direction - poursuiteMontée
+
+(a) L'Ascenseur[etage=1, dir=NONE] est au premier étage
+ >> appelAuDessus(1) =true
+(b) La direction choisie est bien UP
+```
 #### Test 1.2
 ##### Description du cas de test
 Nous testons si l'ascenseur change sa `Direction.UP` vers `Direction.DOWN` dans la situation où il est à l'étage 2 et il y a un appel provenant du 1er étage pour aller en haut
@@ -270,5 +292,3 @@ Vers 20 -> [9.20]
 Vers 20 -> [16.17.20]
 Vers 20 -> [16.20]
 ### Couverture PLCS
-
-
