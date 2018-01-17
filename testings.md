@@ -25,6 +25,7 @@ assertEquals(Direction.UP,ascenseur.choisirDirection())
 ##### Test exécuté avec succès ou non
 Oui
 ##### Code
+```
 @Test
 	public void testChoisirDirection_poursuiteMontee()
 	{
@@ -40,6 +41,7 @@ Oui
 
 		System.out.println("(b) La direction choisie est bien UP");
 	}
+```
 ##### Trace d'execution du test
 ```
 Test 1 : choisir Direction - poursuiteMontée
