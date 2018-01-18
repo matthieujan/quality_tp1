@@ -2,7 +2,6 @@
 ## Méthode Tous les noeuds
 ### Listing des noeuds
 3 - 6 - 7 - 10 - 14 - 18 - 19 - 24 - 27 - 28 - 30 - 34 - 38 - 39 - 40 - 41 - 43 - 46 - 47 - 48 - 49 - 52 - 54
-40 - 41 - 48 - 49
 ### Cas de tests
 #### Test 1.1
 ##### Description du cas de test
@@ -71,11 +70,11 @@ sim.appel[1] = Direction.UP
 sim.appel[2] = Direction.DOWN
 
 ##### Chemin couvert
-demiTourHaut = [3.6.7.10.14.18.19.18.24.27.28.30.34.38.39.43.46.47.52]
+demiTourHaut = [3.6.7.10.14.18.24.27.28.30.34.38.39.43.46.47.52]
 ##### Deroulement du test
 Voir Test 1.1
 
-#### Test 1.2 (1.2)
+#### Test 2.2 (1.2)
 ##### Description du cas de test
 On verifie que, si l'ascenseur arrive au 1er étage après avoir été appellé ET que l'ascenseur avait pour destination le 1er étage, et qu'il est rappellé ensuite au rez de chaussé, il arrive au rez de chaussé et change automatiquement sa direction vers `Direction.UP` (car il ne peut plus descendre)
 ##### Nom du cas de test
@@ -101,7 +100,7 @@ testRun_standByMiddle()
 dir = Direction.NONE
 etage = 2
 ##### Chemin couvert
-xxx = [3.6.10.34.38.40.43.46.48.52]
+standByMiddle = [3.6.10.34.38.40.43.46.48.52]
 ##### Résultat attendu
 etage=2
 dir = Direction.NONE
@@ -113,7 +112,7 @@ assertEquals(Direction.NONE,dir)
 ##### Trace d'execution du test
 
 ### Couverture
-Arc couverts / Arc totaux = 30 / 331
+Arc couverts / Arc totaux  = 30 / 31
 
 ## Méthode PLCS
 ### Noeuds spéciaux
@@ -127,30 +126,52 @@ Vers if a false : (6,10),(7,10),(18,24),(27,30),(28,30),(10,34),(30,34),(38,40),
 Vers loop end : (Redite, car loop end egalement if a false)
 ### PLCS
 #### Partant de 3
-Vers 10 -> [3.6.10]
-Vers 10 -> [3.6.7.10]
+Vers 10 -> [3.6.10] -> Couvert par Test 2.3
+Vers 10 -> [3.6.7.10] -> Couvert par Test 1.1 
 Vers 54 -> [3.54] -> Infaisable (while true)
 #### Partant de 10
-Vers 24 -> [10.14.18.24]
-Vers 24 -> [10.14.18.19.18.24]
-Vers 34 -> [10.34]
+Vers 24 -> [10.14.18.24] -> Couvert par Test 1.2
+Vers 24 -> [10.14.18.19.18.24] -> Couvert par Test 1.1
+Vers 34 -> [10.34] -> Couvert par Test 2.3
 #### Partant de 24
-Vers 30 -> [24.27.30]
-Vers 30 -> [24.27.28.30]
+Vers 30 -> [24.27.30] -> Couvert par Test 1.2
+Vers 30 -> [24.27.28.30] -> Couvert par Test 1.1
 #### Partant de 30
-Vers 34 -> [30.34]
+Vers 34 -> [30.34] -> Couvert par Test 1.1
 #### Partant de 34
-Vers 40 -> [34.38.40]
-Vers 43 -> [34.38.39.40]
+Vers 40 -> [34.38.40] -> Couvert par Test 1.2
+Vers 43 -> [34.38.39.43] -> Couvert par Test 1.1
 #### Partant de 40
-Vers 43 -> [40.43]
-Vers 43 -> [40.41.43]
+Vers 43 -> [40.43] -> Couvert par Test 2.3
+Vers 43 -> [40.41.43] -> Couvert par Test 1.2
 #### Partant de 43
-Vers 48 -> [43.46.48]
-Vers 52 -> [43.46.47.52]
+Vers 48 -> [43.46.48] -> Couvert par Test 1.2
+Vers 52 -> [43.46.47.52] -> Couvert par Test 1.1
 #### Partant de 48
-Vers 52 -> [48.52]
-Vers 52 -> [48.49.52]
+Vers 52 -> [48.52] -> Couvert par Test 2.3
+Vers 52 -> [48.49.52] -> Couvert par Test 1.2
 #### Partant de 52
-Vers 3 -> [52.3]
+Vers 3 -> [52.3] -> Tous (Repetition de la boucle)
 ### Couverture PLCS
+PLCS couvert / PLC Totaux= 17 / 18
+
+## Méthode def-use
+### Preparation
+#### Tableau de flot de données (pour var : etage)
+| Noeud     | définition   | c-utilisation   | p-utilisation   |
+| --------- | :----------: | :-------------: | --------------: |
+| 01        | etage        |                 |                 |
+| 06        |              |                 | etage           |
+| 07        |              | etage           |                 |
+| 10        |              |                 | etage           |
+| 14        |              | etage           |                 |
+| 27        |              |                 | etage           |
+| 28        |              | etage           |                 |
+| 30        |              | etage           |                 |
+| 39        | etage        | etage           |                 |
+| 41        | etage        | etage           |                 |
+| 46        |              |                 | etage           |
+| 48        |              |                 | etage           |
+
+#### Tableau de pair def-use (pour var : etage)
+- Pas compris comment le réaliser
