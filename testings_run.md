@@ -20,11 +20,56 @@ demiTourHaut = [3.6.7.10.14.18.19.18.24.27.28.30.34.38.39.43.46.47.52]
 etage == 3
 dir == Direction.DOWN
 ##### Condition de réussite
-assertEquals(3,etage);
-assertEquals(Direction.DOWN,dir)
+assertTrue(check_directionAscenseur(Direction.DOWN))
+assertTrue(check_arretCetEtage(3))
 ##### Test exécuté avec succès ou non
+Oui
 ##### Code
+```
+@Test
+	public void testRun_demiTourHaut()
+	{
+		System.out.println("\n-> Test 1.1: run - demi tour haut\n");
+		ascenseur =new Ascenseur(2,this);
+		//Lancement de la méthode run
+		ascenseur.start();
+		ascenseur.dir = Direction.NONE;
+		appels[1] =Direction.UP;
+		appels[2] =Direction.DOWN;
+		System.out.println("(a) L'"+ascenseur+" est au 2 eme etage");
+
+
+
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+		etageArret=-1;
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+
+		// Valider le comportement :
+		assertTrue(check_directionAscenseur(Direction.DOWN));
+		System.out.println("(b) La direction choisie est bien DOWN");
+
+		assertTrue(check_arretCetEtage(3));
+		System.out.println("(c) L'ascenseur s'est bien arrété à l'étage 3");
+	}
+```
 ##### Trace d'execution du test
+```
+-> Test 1.1: run - demi tour haut
+
+(a) L'Ascenseur[etage=2, dir=NONE] est au 2 eme etage
+1.	+ Ascenseur:		+ arret a l'etage 2
+2.	+ Ascenseur: 		+ fin de l'arret
+ >> appelAuDessus(2) =true
+3.	+ Ascenseur:		+ direction: UP
+4.	+ Ascenseur:		+ etage: 3
+5.	+ Ascenseur:		+ arret a l'etage 3
+(b) La direction choisie est bien DOWN
+(c) L'ascenseur s'est bien arrété à l'étage 3
+```
 
 #### Test 1.2
 ##### Description du cas de test
@@ -44,11 +89,59 @@ demiTourHaut = [3.6.7.10.14.18.19.18.24.27.30.34.38.40.41.43.46.48.49.52]
 etage == 1
 dir == Direction.UP
 ##### Condition de réussite
-assertEquals(1,etage);
-assertEquals(Direction.UP,dir)
+assertTrue(check_directionAscenseur(Direction.UP));
+assertTrue(check_arretCetEtage(1));
 ##### Test exécuté avec succès ou non
+Oui
 ##### Code
+```
+@Test
+	public void testRun_demiTourBas()
+	{
+		System.out.println("\n-> Test 1.2: run - demi tour bas\n");
+		ascenseur =new Ascenseur(2,this);
+		//Lancement de la méthode run
+		ascenseur.start();
+		ascenseur.dir = Direction.UP;
+		this.destinations[1] = true;
+		appels[1] =Direction.DOWN;
+		appels[0] =Direction.UP;
+		System.out.println("(a) L'"+ascenseur+" est au 2 eme etage");
+
+
+
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+		etageArret=-1;
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+
+		// Valider le comportement :
+		assertTrue(check_directionAscenseur(Direction.UP));
+		System.out.println("(b) La direction choisie est bien UP");
+
+		assertTrue(check_arretCetEtage(1));
+		System.out.println("(c) L'ascenseur s'est bien arrété à l'étage 1");
+	}
+```
 ##### Trace d'execution du test
+```
+-> Test 1.2: run - demi tour bas
+
+(a) L'Ascenseur[etage=2, dir=UP] est au 2 eme etage
+1.	+ Ascenseur:		+ arret a l'etage 2
+2.	+ Ascenseur: 		+ fin de l'arret
+ >> appelAuDessus(2) =false
+ >> destAuDessus(2) =false
+ >> appelEnDessous(2) =true
+3.	+ Ascenseur:		+ direction: DOWN
+4.	+ Ascenseur:		+ etage: 1
+5.	+ Ascenseur:		+ arret a l'etage 1
+(b) La direction choisie est bien UP
+(c) L'ascenseur s'est bien arrété à l'étage 1
+```
 
 ### Couverture
 Noeuds couverts / Noeuds totaux = 22/23
@@ -108,8 +201,62 @@ dir = Direction.NONE
 assertEquals(2,etage);
 assertEquals(Direction.NONE,dir)
 ##### Test exécuté avec succès ou non
+Oui
 ##### Code
+```
+@Test
+	public void testRun_standByMiddle()
+	{
+		System.out.println("\n-> Test 2.3: run - stand by middle\n");
+		ascenseur =new Ascenseur(2,this);
+		//Lancement de la méthode run
+		ascenseur.start();
+		ascenseur.dir = Direction.NONE;
+		System.out.println("(a) L'"+ascenseur+" est au 2 eme etage");
+
+
+
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+		etageArret=-1;
+		try { Thread.sleep(Constantes.DELAIDISTRACTION); }
+		catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
+
+
+		// Valider le comportement :
+		assertTrue(check_directionAscenseur(Direction.DOWN));
+		System.out.println("(b) La direction choisie est bien DOWN");
+
+		assertTrue(check_arretCetEtage(3));
+		System.out.println("(c) L'ascenseur s'est bien arrété à l'étage 3");
+	}
+```
 ##### Trace d'execution du test
+La fonction Run étant une boucle infini, l'ascenseur attend à l'étage 2 à l'infini
+```
+-> Test 2.3: run - stand by middle
+
+(a) L'Ascenseur[etage=2, dir=NONE] est au 2 eme etage
+ >> appelAuDessus(2) =false
+ >> destAuDessus(2) =false
+ >> appelEnDessous(2) =false
+ >> destEnDessous(2) =false
+1.	+ Ascenseur:		+ direction: NONE
+2.	+ Ascenseur:		+ etage: 2
+ >> appelAuDessus(2) =false
+ >> destAuDessus(2) =false
+ >> appelEnDessous(2) =false
+ >> destEnDessous(2) =false
+3.	+ Ascenseur:		+ direction: NONE
+4.	+ Ascenseur:		+ etage: 2
+ >> appelAuDessus(2) =false
+ >> destAuDessus(2) =false
+ >> appelEnDessous(2) =false
+ >> destEnDessous(2) =false
+
+ ...
+```
 
 ### Couverture
 Arc couverts / Arc totaux  = 30 / 31
@@ -127,7 +274,7 @@ Vers loop end : (Redite, car loop end egalement if a false)
 ### PLCS
 #### Partant de 3
 Vers 10 -> [3.6.10] -> Couvert par Test 2.3
-Vers 10 -> [3.6.7.10] -> Couvert par Test 1.1 
+Vers 10 -> [3.6.7.10] -> Couvert par Test 1.1
 Vers 54 -> [3.54] -> Infaisable (while true)
 #### Partant de 10
 Vers 24 -> [10.14.18.24] -> Couvert par Test 1.2
