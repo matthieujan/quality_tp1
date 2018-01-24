@@ -1,114 +1,7 @@
-
-import org.junit.*;
-import static org.junit.Assert.*;
-import evenements.*;
-import java.util.*;
-
-/**
- * Driver qui permet d'executer les tests unitaires sur le simulateur d'ascenseur.
- */
-public class TestGlobal extends Simulateur
-{
-
-	public static junit.framework.Test suite()
-	{
-		return new junit.framework.JUnit4TestAdapter(TestGlobal.class);
-	}
-
-
-	public boolean REUSSITE =true;
-
- 	/** Test unitaire sur l'ascenseur. */
-	@Test
-	public void testGlobalTousPreambules()
-	{
-		System.out.println("\n-> Test Global: tester les 4 conditions globales sur tous les preambules \n");
-
-		// Creer les portes (de 0 a 2 pour les etages 1 a 3)
-		for (int i=0;i<Constantes.ETAGES;i++)
-		{
-		    portes[i] =new Porte(i+1,this); // (etage, simulateur)
-		    portes[i].start();
-		}
-
-		//Bouclez ici!
-		for(int i=0;i<4;i++){
-			int depart0 =2, dest0 =3;
-			int depart1 =3, dest1 =1;
-			int etageAsc =1;
-            long distraction = Constantes.DELAIDISTRACTION;
-            //long distraction = 0;
-
-			System.out.println("Input: Usager0("+depart0+","+dest0+") Usager1("+depart1+","+dest1+") Asc("+etageAsc+")");
-            switch(i){
-                case 0:
-                    System.out.println("TestGlobal1 : ");
-                    break;
-                case 1:
-                    System.out.println("TestGlobal2 : ");
-                    break;
-                case 2:
-                    System.out.println("TestGlobal3 : ");
-                    break;
-                case 3:
-                    System.out.println("TestGlobal4 : ");
-                    break;
-            }
-			// Creer les usagers (max 2 usagers, pas de delai)
-			(new Usager("0",depart0,dest0,distraction, this)).start(); // (nom, etage, dest, delai, simulateur)
-			(new Usager("1",depart1,dest1,distraction, this)).start();
-
-			// Creer l'ascenseur
-			ascenseur = new Ascenseur(etageAsc, this); // (etage, simulateur)
-			ascenseur.start();
-
-			// Attendre fin de la simulation ou une faute...
-			while (usager_term <Constantes.USAGERS && REUSSITE)
-				pause(50);
-
-			ascenseur.stop();
-
-            switch(i){
-                case 0:
-                    REUSSITE = TestGlobal1();
-                    assertTrue( " Trace : \n" + evenements, REUSSITE );
-                    break;
-                case 1:
-                    REUSSITE = TestGlobal2();
-                    assertTrue( " Trace : \n" + evenements, REUSSITE );
-                    break;
-                case 2:
-                    REUSSITE = TestGlobal3();
-                    assertTrue( " Trace : \n" + evenements, REUSSITE );
-                    break;
-                case 3:
-                    REUSSITE = TestGlobal4();
-                    assertTrue( " Trace : \n" + evenements, REUSSITE );
-                    break;
-            }
-
-			// Verifier que les conditions globales sont toujours respectees
-
-
-			// Reinitialisation
-			pause(Constantes.DELAIPORTE); // Court delai avant de demarrer prochain test
-			evenements.clear();
-			usager_term =0;
-			etageArret =-1;
-			for (int j=0;j<Constantes.ETAGES;j++)
-			{
-				appels[j] =Direction.NONE;
-				destinations[j] =false;
-			}
-
-		} // Recommencez avec un nouveau preambule...
-
-
-	}
-
-
-
-    /*******************************
+# Rapport TP3
+## Code Tests Globaux
+### Test Global1
+```    /*******************************
      * Comportement global 1
      * Lorsque l'ascenseur est en mouvement, aucune porte n'est ouverte
      *******************************/
@@ -167,8 +60,9 @@ public class TestGlobal extends Simulateur
 
 		// Aucune erreur de trouvee
 		return true;
-    }
-
+    }```
+### Test Global2
+```
     /*******************************
      * Comportement global 2
      * Il est toujours vrai qu'un usager qui demande l'ascenseur y entrera fatalement
@@ -226,8 +120,9 @@ public class TestGlobal extends Simulateur
 
 		// Aucune erreur de trouvee
 		return true;
-    }
-
+    }```
+### Test Global3
+    ```
     /*******************************
      * Comportement global 3
      * Il n'y a jamais plus d'une porte ouverte à la fois
@@ -250,9 +145,6 @@ public class TestGlobal extends Simulateur
 		    	int etage =((EvtPorteFermeture) evenements.get(i)).etage;
 		    	portesOuverte[etage-1] =false;
 		    }
-
-
-
             //Verifier qu'il n'y a pas plus d'une porte ouverte à la fois
             int portesOuvertes = 0;
             for(int j= 0; j<portesOuverte.length;j++){
@@ -267,8 +159,10 @@ public class TestGlobal extends Simulateur
 
 		// Aucune erreur de trouvee
 		return true;
-    }
+    }```
 
+### Test Global4
+```
     /*******************************
      * Comportement global 4
      * La distance parcourue par un usager est toujours égale à [source-destination]
@@ -342,43 +236,48 @@ public class TestGlobal extends Simulateur
 
 		// Aucune erreur de trouvee
 		return true;
-    }
+    }```
 
-    /** Signal d'arrive d'un usager, et fin de l'application... */
-    public void sig_usagerTermine()
-    {
-		usager_term ++;
+## Trace test sans distraction
+```JUnit version 4.1
+.
+-> Test Global: tester les 4 conditions globales sur tous les preambules 
 
-		if (usager_term == Constantes.USAGERS)
-		{
-		    System.out.println("Fin de la simulation");
-		}
-    }
+Input: Usager0(2,3) Usager1(3,1) Asc(1)
+TestGlobal1 : 
+..........................Fin de la simulation
+.Input: Usager0(2,3) Usager1(3,1) Asc(1)
+TestGlobal2 : 
+..........................Fin de la simulation
+.Input: Usager0(2,3) Usager1(3,1) Asc(1)
+TestGlobal3 : 
+..........................Fin de la simulation
+.Input: Usager0(2,3) Usager1(3,1) Asc(1)
+TestGlobal4 : 
+..........................Fin de la simulation
+.
+Time: 14.849
 
-    /** Traitement des evenements */
-    public void ajouter_evenement(Evt evt)
-    {
-		// Ajouter l'evenement
-		evenements.add(evt);
-		System.out.print(".");
+OK (1 test)```
 
-		// A chaque fois q'un evenement est ajoute, on verifie les conditions globales!
-		/*
-        if (REUSSITE)
-			REUSSITE =TestGlobal1();
-        if (REUSSITE)
-			REUSSITE =TestGlobal2();
-        if (REUSSITE)
-			REUSSITE =TestGlobal3();
-        if (REUSSITE)
-			REUSSITE =TestGlobal4();
-            */
-    }
+## Trace test avec distraction
+```JUnit version 4.1
+.
+-> Test Global: tester les 4 conditions globales sur tous les preambules 
 
-	private void pause(long delai)
-	{
-	    try { Thread.sleep(delai); }
-	    catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
-	}
+Input: Usager0(2,3) Usager1(3,1) Asc(1)
+TestGlobal1 : 
+..........................................Fin de la simulation
+.Input: Usager0(2,3) Usager1(3,1) Asc(1)
+TestGlobal2 : 
+............................................................................Fin de la simulation
+.Input: Usager0(2,3) Usager1(3,1) Asc(1)
+TestGlobal3 : 
+..............................................................................................................................................................Fin de la simulation
+.Input: Usager0(2,3) Usager1(3,1) Asc(1)
+TestGlobal4 : 
+..............................................................................................................Fin de la simulation
+.
+Time: 48.338
 
-}
+OK (1 test)```
