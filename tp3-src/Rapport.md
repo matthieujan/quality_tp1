@@ -60,8 +60,11 @@
 
 		// Aucune erreur de trouvee
 		return true;
-    }```
+    }
+    
+    ```
 ### Test Global2
+
 ```
     /*******************************
      * Comportement global 2
@@ -120,9 +123,12 @@
 
 		// Aucune erreur de trouvee
 		return true;
-    }```
-### Test Global3
+    }
     ```
+
+### Test Global3
+
+```
     /*******************************
      * Comportement global 3
      * Il n'y a jamais plus d'une porte ouverte à la fois
@@ -159,7 +165,8 @@
 
 		// Aucune erreur de trouvee
 		return true;
-    }```
+    }
+```
 
 ### Test Global4
 ```
@@ -236,7 +243,8 @@
 
 		// Aucune erreur de trouvee
 		return true;
-    }```
+    }
+    ```
 
 ## Trace test sans distraction
 ```JUnit version 4.1
