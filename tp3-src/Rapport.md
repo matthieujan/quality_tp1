@@ -1,7 +1,8 @@
 # Rapport TP3
 ## Code Tests Globaux
 ### Test Global1
-```    /*******************************
+```
+/*******************************
      * Comportement global 1
      * Lorsque l'ascenseur est en mouvement, aucune porte n'est ouverte
      *******************************/
