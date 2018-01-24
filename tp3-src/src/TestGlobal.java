@@ -7,10 +7,10 @@ import evenements.*;
 /**
  * Driver qui permet d'executer les tests unitaires sur le simulateur d'ascenseur.
  */
-public class TestGlobal extends Simulateur 
+public class TestGlobal extends Simulateur
 {
 
-	public static junit.framework.Test suite() 
+	public static junit.framework.Test suite()
 	{
 		return new junit.framework.JUnit4TestAdapter(TestGlobal.class);
 	}
@@ -19,8 +19,8 @@ public class TestGlobal extends Simulateur
 	public boolean REUSSITE =true;
 
  	/** Test unitaire sur l'ascenseur. */
-	@Test 
-	public void testGlobalTousPreambules() 
+	@Test
+	public void testGlobalTousPreambules()
 	{
 		System.out.println("\n-> Test Global: tester les 4 conditions globales sur tous les preambules \n");
 
@@ -30,8 +30,8 @@ public class TestGlobal extends Simulateur
 		    portes[i] =new Porte(i+1,this); // (etage, simulateur)
 		    portes[i].start();
 		}
-	
-		
+
+
 		//Bouclez ici!
 		{
 			int depart0 =2, dest0 =3;
@@ -39,23 +39,23 @@ public class TestGlobal extends Simulateur
 			int etageAsc =1;
 
 			System.out.println("Input: Usager0("+depart0+","+dest0+") Usager1("+depart1+","+dest1+") Asc("+etageAsc+")");
-			
+
 			// Creer les usagers (max 2 usagers, pas de delai)
 			(new Usager("0",depart0,dest0,0, this)).start(); // (nom, etage, dest, delai, simulateur)
 			(new Usager("1",depart1,dest1,0, this)).start();
-			
-			// Creer l'ascenseur  
+
+			// Creer l'ascenseur
 			ascenseur = new Ascenseur(etageAsc, this); // (etage, simulateur)
 			ascenseur.start();
-		
+
 			// Attendre fin de la simulation ou une faute...
 			while (usager_term <Constantes.USAGERS && REUSSITE)
 				pause(50);
 
 			ascenseur.stop();
 
-			
-			// Verifier que les conditions globales sont toujours respectées
+
+			// Verifier que les conditions globales sont toujours respectees
 			assertTrue( " Trace : \n" + evenements, REUSSITE );
 
 
@@ -72,10 +72,10 @@ public class TestGlobal extends Simulateur
 
 		} // Recommencez avec un nouveau preambule...
 
-		
+
 	}
 
-	
+
 
     /*******************************
      * Comportement global 1
@@ -88,9 +88,9 @@ public class TestGlobal extends Simulateur
 
 		// Variable pour verifier s'il y a eu un changement d'etage
 		int etageCourant =-1;
-	
-	
-		// Analyse de la sequence d'evenements 
+
+
+		// Analyse de la sequence d'evenements
 		for (int i=0; i<evenements.size(); i++)
 		{
 		    // Initialiser la variable etageCourant
@@ -101,18 +101,18 @@ public class TestGlobal extends Simulateur
 					etageCourant =((EvtAscenseurEtage) evenements.get(i)).etage;
 
 
-		    // Une porte s'ouvre 
+		    // Une porte s'ouvre
 		    if(evenements.get(i) instanceof EvtPorteOuverture) {
 		    	int etage =((EvtPorteOuverture) evenements.get(i)).etage;
 		    	portesOuverte[etage-1] =true;
 		    }
-	
+
 		    // Une porte se ferme
 		    if(evenements.get(i) instanceof EvtPorteFermeture) {
 		    	int etage =((EvtPorteFermeture) evenements.get(i)).etage;
-		    	portesOuverte[etage-1] =true;
+		    	portesOuverte[etage-1] =false;
 		    }
-	
+
 		    // L'ascenseur se deplace
 		    if(evenements.get(i) instanceof EvtAscenseurEtage) {
 
@@ -120,9 +120,9 @@ public class TestGlobal extends Simulateur
 				if (etageCourant !=((EvtAscenseurEtage) evenements.get(i)).etage)
 					// Si une porte est ouverte, il y a une erreur!
 					for(int j=0; j<Constantes.ETAGES; j++)
-				    	if(portesOuverte[j]) 
+				    	if(portesOuverte[j])
 						{
-							System.out.println("\n Faute TestGlobal1, evenement ["+i+"]: " 
+							System.out.println("\n Faute TestGlobal1, evenement ["+i+"]: "
 									+ evenements.get(i)
 									+ " -> La porte ["+(j+1)+"] est ouverte. ");
 							return false;
@@ -133,17 +133,17 @@ public class TestGlobal extends Simulateur
 
 		    // Les autres evenements sont ignores
 		}
-	
-		// Aucune erreur de trouvee 
+
+		// Aucune erreur de trouvee
 		return true;
     }
-    
-    
+
+
     /** Signal d'arrive d'un usager, et fin de l'application... */
     public void sig_usagerTermine()
     {
 		usager_term ++;
-		
+
 		if (usager_term == Constantes.USAGERS)
 		{
 		    System.out.println("Fin de la simulation");
@@ -153,7 +153,7 @@ public class TestGlobal extends Simulateur
     /** Traitement des evenements */
     public void ajouter_evenement(Evt evt)
     {
-		// Ajouter l'evenement 
+		// Ajouter l'evenement
 		evenements.add(evt);
 		System.out.print(".");
 
@@ -167,7 +167,7 @@ public class TestGlobal extends Simulateur
 	private void pause(long delai)
 	{
 	    try { Thread.sleep(delai); }
-	    catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }					
+	    catch(InterruptedException e) { System.out.print("Erreur dans Thread.sleep\n"); }
 	}
 
 }
