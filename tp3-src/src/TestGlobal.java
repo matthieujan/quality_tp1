@@ -2,7 +2,7 @@
 import org.junit.*;
 import static org.junit.Assert.*;
 import evenements.*;
-
+import java.util.*;
 
 /**
  * Driver qui permet d'executer les tests unitaires sur le simulateur d'ascenseur.
@@ -138,6 +138,166 @@ public class TestGlobal extends Simulateur
 		return true;
     }
 
+    /*******************************
+     * Comportement global 2
+     * Il est toujours vrai qu'un usager qui demande l'ascenseur y entrera fatalement
+     *******************************/
+    private boolean TestGlobal2(){
+        // Analyse de la sequence d'evenements
+        HashMap<String,Integer> usagersSource = new HashMap();
+        int etageCourant = -1;
+
+		for (int i=0; i<evenements.size(); i++)
+		{
+            // Gestion des appels
+            if(evenements.get(i) instanceof EvtUsagerAppel) {
+                String name = ((EvtUsagerAppel) evenements.get(i)).name;
+                int etage = ((EvtUsagerAppel) evenements.get(i)).etage;
+                usagersSource.put(name,etage);
+            }
+
+            // Gestion des entrées
+            if(evenements.get(i) instanceof EvtUsagerEntree) {
+                String name = ((EvtUsagerEntree) evenements.get(i)).name;
+                usagersSource.remove(name);
+            }
+
+            // Gestion des entrées
+            if(evenements.get(i) instanceof EvtAscenseurEtage) {
+                etageCourant = ((EvtAscenseurEtage) evenements.get(i)).etage;
+            }
+
+            if(evenements.get(i) instanceof EvtAscenseurFinArret) {
+                for(Map.Entry<String, Integer> entry : usagersSource.entrySet()){
+                        String name = entry.getKey();
+                        if(usagersSource.get(name) == etageCourant){
+                            return false;
+                        }
+                }
+            }
+
+		    // Les autres evenements sont ignores
+		}
+
+		// Aucune erreur de trouvee
+		return true;
+    }
+
+    /*******************************
+     * Comportement global 3
+     * Il n'y a jamais plus d'une porte ouverte à la fois
+     *******************************/
+    private boolean TestGlobal3()
+    {
+		// Vecteur pour noter quelle porte est ouverte
+		boolean portesOuverte[] = new boolean[Constantes.ETAGES];
+
+		// Analyse de la sequence d'evenements
+		for (int i=0; i<evenements.size(); i++)
+		{
+		    // Une porte s'ouvre
+		    if(evenements.get(i) instanceof EvtPorteOuverture) {
+		    	int etage =((EvtPorteOuverture) evenements.get(i)).etage;
+		    	portesOuverte[etage-1] =true;
+		    }
+		    // Une porte se ferme
+		    if(evenements.get(i) instanceof EvtPorteFermeture) {
+		    	int etage =((EvtPorteFermeture) evenements.get(i)).etage;
+		    	portesOuverte[etage-1] =false;
+		    }
+
+
+
+            //Verifier qu'il n'y a pas plus d'une porte ouverte à la fois
+            int portesOuvertes = 0;
+            for(int j= 0; j<portesOuverte.length;j++){
+                if(portesOuverte[j]) portesOuvertes++;
+            }
+
+            if(portesOuvertes>1){
+                return false;
+            }
+		    // Les autres evenements sont ignores
+		}
+
+		// Aucune erreur de trouvee
+		return true;
+    }
+
+    /*******************************
+     * Comportement global 4
+     * La distance parcourue par un usager est toujours égale à [source-destination]
+     *******************************/
+    private boolean TestGlobal4(){
+        // Analyse de la sequence d'evenements
+        HashMap<String,Integer> usagersInside = new HashMap();
+        HashMap<String,Integer> usagersSource = new HashMap();
+        HashMap<String,Integer> usagersDest = new HashMap();
+        // Variable pour verifier s'il y a eu un changement d'etage
+		int etageCourant =-1;
+		for (int i=0; i<evenements.size(); i++)
+		{
+
+            // Initialiser la variable etageCourant
+		    if (etageCourant ==-1)
+				if (evenements.get(i) instanceof EvtAscenseurArret)
+					etageCourant =((EvtAscenseurArret) evenements.get(i)).etage;
+				else if (evenements.get(i) instanceof EvtAscenseurEtage)
+					etageCourant =((EvtAscenseurEtage) evenements.get(i)).etage;
+
+            //Gestion des entrées dans l'ascenseur
+		    if(evenements.get(i) instanceof EvtUsagerEntree) {
+                String name = ((EvtUsagerEntree) evenements.get(i)).name;
+                usagersInside.put(name,0);
+            }
+
+            //Gestion des sorties de l'ascenseur
+            if(evenements.get(i) instanceof EvtUsagerSortie) {
+                String name = ((EvtUsagerSortie) evenements.get(i)).name;
+                int deplExpected = usagersSource.get(name)-usagersDest.get(name);
+                if(deplExpected<0)deplExpected*=-1;
+                if(usagersInside.get(name)!=deplExpected){
+                    return false;
+                }
+                usagersInside.remove(name);
+            }
+
+            // Gestion des appels
+            if(evenements.get(i) instanceof EvtUsagerAppel) {
+                String name = ((EvtUsagerAppel) evenements.get(i)).name;
+                int etage = ((EvtUsagerAppel) evenements.get(i)).etage;
+                usagersSource.put(name,etage);
+            }
+
+            // Gestion des destinations
+            if(evenements.get(i) instanceof EvtUsagerDestination) {
+                String name = ((EvtUsagerDestination) evenements.get(i)).name;
+                int etage = ((EvtUsagerDestination) evenements.get(i)).dest;
+                usagersDest.put(name,etage);
+            }
+
+            // L'ascenseur se deplace
+		    if(evenements.get(i) instanceof EvtAscenseurEtage) {
+				// Verifier s'il y a un changement d'etage
+                int deplacement = etageCourant-((EvtAscenseurEtage)evenements.get(i)).etage;
+                if (deplacement != 0){
+                    if(deplacement < 0) deplacement*=-1;
+
+                    for(Map.Entry<String, Integer> entry : usagersInside.entrySet()){
+                        String name = entry.getKey();
+                        usagersInside.put(name,usagersInside.get(name)+deplacement);
+                    }
+                }
+
+				etageCourant =((EvtAscenseurEtage) evenements.get(i)).etage;
+		    }
+
+		    // Les autres evenements sont ignores
+		}
+
+		// Aucune erreur de trouvee
+		return true;
+    }
 
     /** Signal d'arrive d'un usager, et fin de l'application... */
     public void sig_usagerTermine()
@@ -160,8 +320,12 @@ public class TestGlobal extends Simulateur
 		// A chaque fois q'un evenement est ajoute, on verifie les conditions globales!
 		if (REUSSITE)
 			REUSSITE =TestGlobal1();
-
-		// Global2, Global3, Global4
+        if (REUSSITE)
+			REUSSITE =TestGlobal2();
+        if (REUSSITE)
+			REUSSITE =TestGlobal3();
+        if (REUSSITE)
+			REUSSITE =TestGlobal4();
     }
 
 	private void pause(long delai)
